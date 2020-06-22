@@ -1,0 +1,33 @@
+version: "3"
+
+services: 
+
+  wiki_js:
+    container_name: wiki
+    image: requarks/wiki:2
+    ports: 
+      - ${HOST_PORT}:3000
+    environment: 
+      DB_TYPE: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: crazyoptimist
+      DB_PASS: ${DB_PASS}
+      DB_NAME: wiki
+    restart: unless-stopped
+
+  db: 
+    container_name: postgres
+    image: postgres:alpine
+    # ports: 
+    #   - "54320:5432"
+    environment: 
+      - POSTGRES_USER=crazyoptimist
+      - POSTGRES_PASSWORD=${DB_PASS}
+      - POSTGRES_DB=wiki
+    volumes: 
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes: 
+  db_data:
